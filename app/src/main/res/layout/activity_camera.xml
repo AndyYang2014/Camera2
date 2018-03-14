@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".activity.CameraActivity">
+
+    <com.andyyang.camera2.view.AutoFitTextureView
+        android:id="@+id/camera_texture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@+id/camera_flip"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:onClick="onClick"
+        android:scaleType="centerCrop"
+        android:src="@drawable/camera_flip" />
+
+    <ImageView
+        android:id="@+id/camera_flash"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_toLeftOf="@id/camera_flip"
+        android:onClick="onClick"
+        android:scaleType="centerCrop"
+        android:src="@drawable/camera_flash_off" />
+
+    <ImageView
+        android:id="@+id/camera_finsh"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:onClick="onClick"
+        android:scaleType="centerCrop"
+        android:src="@drawable/camera_cancle" />
+
+    <RelativeLayout
+        android:id="@+id/camera_control"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:background="#a0000000"
+        android:padding="5dp">
+
+        <com.andyyang.camera2.view.CircleImageView
+            android:id="@+id/camera_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:onClick="onClick"
+            app:round_Radius="3dp"
+            app:type="round" />
+
+        <ImageView
+            android:id="@+id/camera_picture"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:onClick="onClick"
+            android:src="@drawable/btn_shutter_photo" />
+    </RelativeLayout>
+
+</RelativeLayout>
