@@ -16,6 +16,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 
+import com.andyyang.camera2.ImageLoader;
 import com.andyyang.camera2.R;
 
 
@@ -230,6 +231,10 @@ public class CircleImageView extends android.support.v7.widget.AppCompatImageVie
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         setup();
+    }
+
+    public void displayUrl(String url) {
+        ImageLoader.loadImage(this.getContext(), "file://" + url, this);
     }
 
     public int getType() {

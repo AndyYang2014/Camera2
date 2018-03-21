@@ -9,6 +9,7 @@ import com.andyyang.camera2.R
 import com.andyyang.camera2.adapter.holder.ViewHolder
 import com.andyyang.camera2.bean.ImageBean
 import com.andyyang.camera2.ImageLoader
+import com.andyyang.camera2.displayUrl
 import kotlinx.android.synthetic.main.item_gallery.view.*
 
 
@@ -32,7 +33,7 @@ class GalleryAdapter(private var list: List<ImageBean>, private val context: Con
         if (position == selectedPos) holder.itemView.iv_itemGallery_check.visibility = View.VISIBLE else holder.itemView.iv_itemGallery_check.visibility = View.GONE
         holder.itemView.tv_itemGallery_count.text = list[position].count.toString() + "张"
         holder.itemView.tv_itemGallery_name.text = list[position].fileName
-        ImageLoader.loadImage(context, "file://" + list[position].firstPicPath, holder.itemView.iv_itemGallery)
+        holder.itemView.iv_itemGallery.displayUrl(list[position].firstPicPath)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

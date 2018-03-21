@@ -20,5 +20,4 @@ class App : Application() {
         var context by Delegates.notNull<App>()
     }
 
-
 }

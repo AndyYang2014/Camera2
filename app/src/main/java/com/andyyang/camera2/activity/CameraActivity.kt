@@ -12,20 +12,24 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.net.Uri
-import android.os.*
+import android.os.Bundle
+import android.os.Environment
+import android.os.Handler
+import android.os.HandlerThread
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.util.Size
 import android.util.SparseIntArray
 import android.view.*
 import com.andyyang.camera2.CompareSizesByArea
 import com.andyyang.camera2.R
-import com.andyyang.camera2.ImageLoader
-import com.andyyang.camera2.view.AutoFitTextureView
+import com.andyyang.camera2.saveImageToGallery
 import com.andyyang.camera2.showToast
 import com.andyyang.camera2.utils.Logger
+import com.andyyang.camera2.view.AutoFitTextureView
 import kotlinx.android.synthetic.main.activity_camera.*
 import java.io.File
 import java.io.FileOutputStream
@@ -42,7 +46,6 @@ import kotlin.collections.ArrayList
  */
 
 class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback {
-
     private val allFiles: ArrayList<String> = ArrayList()
 
     private val CAMERA_FRONT = "1"
@@ -64,8 +67,6 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     private var backgroundThread: HandlerThread? = null
 
     private var backgroundHandler: Handler? = null
-
-    private lateinit var mainHandler: Handler
 
     private var imageReader: ImageReader? = null
 
@@ -124,7 +125,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     }
 
     private val onImageAvailableListener = ImageReader.OnImageAvailableListener {
-        backgroundHandler!!.post {
+        backgroundHandler?.post {
             getImagePath()
             val acquireNextImage = it.acquireNextImage()
             val buffer = acquireNextImage.planes[0].buffer
@@ -135,10 +136,12 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
                 output = FileOutputStream(file).apply {
                     write(bytes)
                 }
-                mainHandler.post {
+                runOnUiThread {
                     updataFile()
                 }
             } catch (e: IOException) {
+                Log.e("ImageReader", e.toString())
+
             } finally {
 
                 acquireNextImage.close()
@@ -146,16 +149,20 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
                     try {
                         it.close()
                     } catch (e: IOException) {
+
                     }
                 }
             }
         }
+
     }
 
     private fun updataFile() {
+        Log.e("ImageReader", Thread.currentThread().toString())
+
+        file.saveImageToGallery(this)
         allFiles.add(file.absolutePath)
-        ImageLoader.loadImage(this@CameraActivity, file.absolutePath, camera_image)
-        ImageLoader.saveImageToGallery(this, file)
+        camera_image.displayUrl(file.absolutePath)
     }
 
     private val captureCallback = object : CameraCaptureSession.CaptureCallback() {
@@ -236,9 +243,9 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     }
 
     fun init() {
+        supportActionBar?.hide()
         sizetype = intent.getIntExtra("sizetype", -1)
         textureView = findViewById(R.id.camera_texture)
-        mainHandler = Handler(Looper.getMainLooper())
     }
 
     fun getImagePath() {
@@ -306,7 +313,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
             val largest = Collections.max(
                     Arrays.asList(*map.getOutputSizes(ImageFormat.JPEG)),
                     CompareSizesByArea())
-            imageReader = ImageReader.newInstance(largest.width, largest.height,
+            imageReader = ImageReader.newInstance(1920, 1080,
                     ImageFormat.JPEG, 2).apply {
                 setOnImageAvailableListener(onImageAvailableListener, backgroundHandler)
             }
@@ -339,9 +346,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
 
             flashSupported = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
             return
-        } catch (e: CameraAccessException) {
-            Logger.e(e.toString())
-        } catch (e: NullPointerException) {
+        } catch (e: Exception) {
 
         }
 
@@ -594,7 +599,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
             0 -> {
                 flashmode = 1
                 camera_flash.setImageResource(R.drawable.camera_flash_auto)
-                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH)
                 try {
                     captureSession?.setRepeatingRequest(
                             previewRequestBuilder.build(),
@@ -607,7 +612,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
             1 -> {
                 flashmode = 2
                 camera_flash.setImageResource(R.drawable.camera_flash_on)
-                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+                previewRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH)
                 try {
                     captureSession?.setRepeatingRequest(
                             previewRequestBuilder.build(),
@@ -665,7 +670,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
         intent.putStringArrayListExtra("paths", allFiles)
         intent.putExtra("type", ImageSelecteActivity.IMAGE_TYPE_CAMERA)
         intent.putExtra("sizetype", sizetype)
-        startActivityForResult(intent, CAMERA_CAMERAACTIVITY)
+        startActivityForResult(intent, CameraActivity.CAMERA_CAMERAACTIVITY)
     }
 
     private fun setAutoFlash(requestBuilder: CaptureRequest.Builder) {
@@ -685,7 +690,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == CAMERA_CAMERAACTIVITY) {
+        if (requestCode == CameraActivity.CAMERA_CAMERAACTIVITY) {
             if (resultCode == Activity.RESULT_OK) {
                 setResult(Activity.RESULT_OK, data)
                 finish()
@@ -696,7 +701,6 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
     companion object {
 
         private val ORIENTATIONS = SparseIntArray()
-        private val FRAGMENT_DIALOG = "dialog"
 
         init {
             ORIENTATIONS.append(Surface.ROTATION_0, 90)
@@ -712,7 +716,6 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
         private val STATE_PICTURE_TAKEN = 4
         private val MAX_PREVIEW_WIDTH = 1920
         private val MAX_PREVIEW_HEIGHT = 1080
-        val CAMERA_TYPE_FILES = 3002
         private val CAMERA_CAMERAACTIVITY = 88
         private val REQUEST_CAMERA_PERMISSION = 1
 

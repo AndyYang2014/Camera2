@@ -3,6 +3,7 @@
     package="com.andyyang.camera2">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -27,6 +28,8 @@
         <activity
             android:name=".activity.CameraActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.ImageSelecteActivity" />
+        <activity android:name=".activity.ImageActivity"/>
     </application>
 
 </manifest>

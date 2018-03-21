@@ -1,5 +1,6 @@
 package com.andyyang.camera2.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -37,7 +38,8 @@ class ImageSelecteActivity : AppCompatActivity() {
     private var listSelectedPath = ArrayList<String>()
 
 
-    private val mHandler = object : Handler() {
+    private val mHandler = @SuppressLint("HandlerLeak")
+    object : Handler() {
         override fun handleMessage(msg: Message) {
             getGalleryList()
             listPath.clear()

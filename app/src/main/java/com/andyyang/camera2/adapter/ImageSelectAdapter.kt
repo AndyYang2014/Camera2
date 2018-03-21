@@ -8,6 +8,7 @@ import android.widget.CheckBox
 import com.andyyang.camera2.R
 import com.andyyang.camera2.adapter.holder.ViewHolder
 import com.andyyang.camera2.ImageLoader
+import com.andyyang.camera2.displayUrl
 import com.andyyang.camera2.showToast
 import kotlinx.android.synthetic.main.item_image_select.view.*
 import java.util.*
@@ -31,7 +32,7 @@ class ImageSelectAdapter(private val context: Context, list: List<String>, size:
     }
 
     override fun onBindView(holder: ViewHolder, position: Int) {
-        ImageLoader.loadImage(context, "file://" + list[position], holder.itemView.iv_itemImageSelect)
+        holder.itemView.iv_itemImageSelect.displayUrl(list[position])
         holder.itemView.cb_itemImageSelect.isChecked = listChecked[position]
         holder.itemView.setOnClickListener {
             if (size == -1) setCheck(holder, position) else {
