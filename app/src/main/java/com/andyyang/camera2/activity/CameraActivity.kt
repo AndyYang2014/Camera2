@@ -12,10 +12,7 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.net.Uri
-import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.*
 import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -31,6 +28,8 @@ import com.andyyang.camera2.showToast
 import com.andyyang.camera2.utils.Logger
 import com.andyyang.camera2.view.AutoFitTextureView
 import kotlinx.android.synthetic.main.activity_camera.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -313,7 +312,7 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
             val largest = Collections.max(
                     Arrays.asList(*map.getOutputSizes(ImageFormat.JPEG)),
                     CompareSizesByArea())
-            imageReader = ImageReader.newInstance(1920, 1080,
+            imageReader = ImageReader.newInstance(largest.width, largest.height,
                     ImageFormat.JPEG, 2).apply {
                 setOnImageAvailableListener(onImageAvailableListener, backgroundHandler)
             }
@@ -385,7 +384,12 @@ class CameraActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsR
             if (!cameraOpenCloseLock.tryAcquire(2500, TimeUnit.MILLISECONDS)) {
                 throw RuntimeException("Time out waiting to lock camera opening.")
             }
-            manager.openCamera(cameraId, stateCallback, backgroundHandler)
+            doAsync {
+                SystemClock.sleep(100)
+                uiThread {
+                    manager.openCamera(cameraId, stateCallback, backgroundHandler)
+                }
+            }
         } catch (e: CameraAccessException) {
             Logger.e(e.toString())
         } catch (e: InterruptedException) {
