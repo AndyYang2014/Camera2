@@ -13,7 +13,17 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:text="打开相机" />
+        android:text="Camera相机" />
+
+
+    <Button
+        android:id="@+id/camera2"
+        android:onClick="onClick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp"
+        android:text="Camera2相机" />
 
     <Button
         android:id="@+id/album"
@@ -21,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:text="打开相册" />
 
     <android.support.v7.widget.RecyclerView

@@ -234,7 +234,7 @@ public class CircleImageView extends android.support.v7.widget.AppCompatImageVie
     }
 
     public void displayUrl(String url) {
-        ImageLoader.loadImage(this.getContext(), "file://" + url, this);
+        ImageLoader.INSTANCE.loadImage(this.getContext(), "file://" + url, this);
     }
 
     public int getType() {

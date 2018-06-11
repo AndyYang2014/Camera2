@@ -45,6 +45,7 @@ class ImageSelecteActivity : AppCompatActivity() {
             listPath.clear()
             val grouplist = mGroupMap["所有图片"]
             listPath.addAll(grouplist!!)
+            listPath.reverse()
             adapter.update(listPath)
             if (mPopupWindow != null)
                 mPopupWindow!!.notifyDataChanged()
@@ -111,6 +112,7 @@ class ImageSelecteActivity : AppCompatActivity() {
                     listPath.clear()
                     listSelectedPath.clear()
                     listPath.addAll(mGroupMap[it]!!)
+                    listPath.reverse()
                     adapter.update(listPath)
                     tv_allPic.text = it
                 }

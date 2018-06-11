@@ -3,6 +3,7 @@ package com.andyyang.camera2.adapter
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import com.andyyang.camera2.R
 import com.andyyang.camera2.adapter.holder.ViewHolder
@@ -21,11 +22,11 @@ class MainAdapter(val content: Context) : BaseAdapter<ViewHolder>() {
         viewHolder.itemView.main_item_img.displayUrl(data[position])
         viewHolder.itemView.tag = position
         viewHolder.itemView.setOnClickListener {
-            itemClick?.invoke(position)
+            itemClick?.invoke(it,position)
         }
     }
 
-    var itemClick: ((Int) -> Unit)? = null
+    var itemClick: ((View,Int) -> Unit)? = null
 
     fun update(list: ArrayList<String>) {
         Log.e("list", list[0])

@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.support.annotation.IntDef;
 import android.util.Log;
 
+import com.andyyang.camera2.App;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -87,11 +89,10 @@ public final class Logger {
     public static class Builder {
         public Builder() {
             if (defaultDir != null) return;
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())
-                    && Utils.getContext().getExternalCacheDir() != null)
-                defaultDir = Utils.getContext().getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
+                defaultDir = App.Companion.getContext().getExternalCacheDir() + FILE_SEP + "log" + FILE_SEP;
             else {
-                defaultDir = Utils.getContext().getCacheDir() + FILE_SEP + "log" + FILE_SEP;
+                defaultDir = App.Companion.getContext().getCacheDir() + FILE_SEP + "log" + FILE_SEP;
             }
         }
 

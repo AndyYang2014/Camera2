@@ -27,8 +27,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.CameraActivity"
+            android:name=".activity.Camera2Activity"
             android:screenOrientation="portrait" />
+        <activity android:name=".activity.CameraActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activity.ImageSelecteActivity"
             android:screenOrientation="portrait" />
